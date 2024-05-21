@@ -3,14 +3,18 @@
 import Image from "next/image";
 import Product from "./components/product";
 import Dialog from "./components/dialog";
-import { quantum } from "ldrs";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  quantum.register();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    async function getLoader() {
+      const { quantum } = await import("ldrs");
+      quantum.register();
+    }
+    getLoader();
+
     setTimeout(() => {
       setIsLoading(false);
     }, 5000);
