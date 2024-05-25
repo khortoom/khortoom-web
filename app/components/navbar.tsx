@@ -6,11 +6,11 @@ import logo from "@/public/logo.jpg";
 function Navbar() {
   return (
     <div className="fixed z-50 w-full flex flex-row items-center justify-center">
-      <div className="navbar w-[calc(100%-48px)] sm:w-[calc(100%-96px)] glass backdrop-blur-md shadow-md rounded-md mx-auto my-2 flex flex-col sm:flex-row items-center justify-center">
-        <div className="flex-1">
+      <div className="backdrop glass navbar w-[calc(100%-48px)] sm:w-[calc(100%-96px)] shadow-md rounded-md mx-auto my-2 flex flex-col sm:flex-row items-center justify-center">
+        <div className="flex-1 w-full">
           <Link
             href="/"
-            className="btn btn-ghost text-xl flex flex-row items-center bg-white/80"
+            className="btn btn-ghost text-xl flex flex-row items-center bg-white/80 w-full sm:w-auto"
           >
             <Image
               src={logo}
@@ -25,7 +25,7 @@ function Navbar() {
 
         <ul className="menu menu-horizontal px-1 gap-1">
           <li>
-            <Link href="/team" className="btn btn-ghost">
+            <Link href="/team" className="btn btn-ghost bg-white/60">
               تیم ما
             </Link>
           </li>
