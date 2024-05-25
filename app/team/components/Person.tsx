@@ -11,7 +11,7 @@ interface Props {
 function Person(props: Props) {
   const { name, description, image, link, className } = props;
   return (
-    <div className={`card glass w-full md:w-96 ${className}`}>
+    <div className={`card w-full md:w-96 ${className}`}>
       <figure>
         <Image src={image} alt={name} />
       </figure>

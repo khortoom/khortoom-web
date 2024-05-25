@@ -23,5 +23,9 @@ const config: Config = {
     require("daisyui"),
     require("tailwindcss-flip"),
   ],
+  future: {
+    // https://github.com/tailwindlabs/tailwindcss/discussions/1739
+    hoverOnlyWhenSupported: true,
+  },
 };
 export default config;

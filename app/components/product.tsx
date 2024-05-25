@@ -12,7 +12,7 @@ function Product() {
           src="https://dkstatics-public.digikala.com/digikala-products/8cade9127074329e1dec7706c076bfea6a36d9ab_1712562979.jpg"
           alt="Product"
           width={500}
-          height={100}
+          height={500}
         />
       </figure>
       <div className="card-body p-4">

@@ -6,11 +6,11 @@ import logo from "@/public/logo.jpg";
 function Navbar() {
   return (
     <div className="fixed z-50 w-full flex flex-row items-center justify-center">
-      <div className="navbar w-[calc(100%-48px)] sm:w-[calc(100%-96px)] glass  shadow-md rounded-md mx-auto my-2 flex flex-col sm:flex-row items-center justify-center">
+      <div className="navbar w-[calc(100%-48px)] sm:w-[calc(100%-96px)] glass backdrop-blur-md shadow-md rounded-md mx-auto my-2 flex flex-col sm:flex-row items-center justify-center">
         <div className="flex-1">
           <Link
             href="/"
-            className="btn btn-ghost text-xl flex flex-row items-center"
+            className="btn btn-ghost text-xl flex flex-row items-center bg-white/80"
           >
             <Image
               src={logo}
