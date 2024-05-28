@@ -74,7 +74,6 @@ async function Details() {
       </main>
     );
   } catch (error) {
-    console.log("error", error);
     return (
       <main className=" flex min-h-screen w-full flex-col items-center bg-base-100 px-5 pt-44 sm:pt-32">
         <div className="w-full max-w-4xl flex flex-col items-center">

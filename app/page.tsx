@@ -58,8 +58,6 @@ export default function Home() {
     }
   };
 
-  console.log("results", results);
-
   return (
     <main className="flex min-h-screen flex-col items-center px-6 sm:px-12 pt-44 sm:pt-32 pb-12">
       <div className="join join-vertical w-full">

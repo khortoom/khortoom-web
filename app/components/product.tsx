@@ -6,7 +6,6 @@ interface Props {
 
 function Product(props: Props) {
   const { product } = props;
-  console.log("product", product);
   return (
     <a
       href={`https://www.digikala.com/product/dkp-${product.id}/`}
