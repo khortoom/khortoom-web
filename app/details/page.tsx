@@ -1,13 +1,11 @@
-import axios from "axios";
-
 export const dynamic = "force-dynamic";
 
 async function Details() {
   try {
-    const response = await axios.get(
-      `${process.env.SERVER_API_PATH}/api/details`
-    );
-    const data = await response.data;
+    const response = await fetch(`${process.env.SERVER_API_PATH}/api/details`, {
+      cache: "no-store",
+    });
+    const data = await response.json();
 
     return (
       <main className="flex min-h-screen w-full flex-col items-center bg-base-100 px-5 pt-44 sm:pt-32">
