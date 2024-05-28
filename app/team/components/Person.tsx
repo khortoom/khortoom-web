@@ -11,7 +11,7 @@ interface Props {
 function Person(props: Props) {
   const { name, description, image, link, className } = props;
   return (
-    <div className={`card w-full md:w-96 ${className}`}>
+    <div className={`card border w-full md:w-96 ${className}`}>
       <figure>
         <Image src={image} alt={name} />
       </figure>
@@ -21,7 +21,7 @@ function Person(props: Props) {
         <div className="card-actions justify-end">
           <a href={link} target="_blank" rel="noreferrer">
             <svg
-              className="w-6 h-6 text-gray-800"
+              className="w-10 h-10 text-gray-800 hover:bg-gray-800 hover:text-white transition-all duration-300 rounded-md p-1"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               width="24"

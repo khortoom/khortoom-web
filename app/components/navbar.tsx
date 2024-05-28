@@ -30,6 +30,11 @@ function Navbar() {
             </Link>
           </li>
           <li>
+            <Link href="/details" className="btn btn-ghost bg-white/60">
+              جزئیات
+            </Link>
+          </li>
+          <li>
             <button className="btn btn-disabled">
               ورود
               <div className="badge">به زودی</div>
