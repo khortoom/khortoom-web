@@ -6,6 +6,15 @@ import { models } from "@/app/constants";
 
 const defaultModel = "text-embedding-3-small";
 
+import OpenAI from "openai";
+
+const baseUrl = process.env.OPENAI_BASE_URL;
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: baseUrl,
+});
+
 export async function POST(request: Request) {
   const { method } = request;
 
@@ -41,6 +50,21 @@ export async function POST(request: Request) {
     const res = await chromaQuery({
       queryEmbedding: vectorQuery,
       model: queryModel,
+    });
+
+    return NextResponse.json({ res });
+  }
+
+  if (query && model === "text-embedding-3-small") {
+    const embedding = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: query,
+      encoding_format: "float",
+    });
+
+    const res = await chromaQuery({
+      queryEmbedding: embedding.data[0].embedding,
+      model: "text-embedding-3-small",
     });
 
     return NextResponse.json({ res });
