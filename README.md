@@ -2,7 +2,7 @@
 
 Khortoom web is a Next.js project providing user interface and APIs for Khortoom.
 
-It is currently deployed on [Khortoom](https://khortoom.shop/)
+It is currently deployed on [Khortoom](https://khortoom.shop/) (Deployment is based on [replica](https://github.com/benyaminbeyzaie/khortoom-web-replica))
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
