@@ -1,6 +1,12 @@
 import "server-only";
 
-import { ChromaClient, Embedding, Embeddings, IncludeEnum } from "chromadb";
+import {
+  ChromaClient,
+  Embedding,
+  Embeddings,
+  IncludeEnum,
+  Where,
+} from "chromadb";
 
 let client: ChromaClient | null = null;
 
@@ -66,20 +72,20 @@ const getCollectionDetails = async ({ name }: { name: string }) => {
 
 const query = async ({
   queryEmbedding,
-  model,
+  collectionName,
+  include,
+  where,
+  nResults,
 }: {
   queryEmbedding: Embedding;
-  model: "text-embedding-3-small" | "setu4993/LaBSE";
+  collectionName: string;
+  include?: IncludeEnum[] | undefined;
+  where?: Where | undefined;
+  nResults?: number | undefined;
 }) => {
   const c = await init();
 
-  let collection;
-
-  if (model === "setu4993/LaBSE") {
-    collection = await c?.getCollection({ name: "products" });
-  } else if (model === "text-embedding-3-small") {
-    collection = await c?.getCollection({ name: "products_openai" });
-  }
+  const collection = await c?.getCollection({ name: collectionName });
 
   if (!collection) {
     throw new Error("Collection products not found");
@@ -87,8 +93,9 @@ const query = async ({
 
   const results = await collection.query({
     queryEmbeddings: [queryEmbedding],
-    nResults: 5,
-    include: [IncludeEnum.Metadatas],
+    nResults: nResults ?? 5,
+    include: include ?? [IncludeEnum.Metadatas],
+    where: where,
   });
 
   return results;

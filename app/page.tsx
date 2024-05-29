@@ -1,14 +1,15 @@
 "use client";
 
-import Product from "./components/product";
 import Dialog from "./components/dialog";
 import { useEffect, useState } from "react";
-import { models } from "./constants";
+import { collections } from "./constants";
+import ProductResults from "./components/product-result";
+import CommentResults from "./components/comments-result";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [vectorQuery, setVectorQuery] = useState("");
-  const [selectedModel, setSelectedModel] = useState(models[0]);
+  const [selectedCollection, setSelectedCollection] = useState(collections[0]);
 
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,9 +44,9 @@ export default function Home() {
         body: vectorQuery
           ? JSON.stringify({
               vectorQuery: JSON.parse(vectorQuery),
-              model: selectedModel,
+              collection: selectedCollection,
             })
-          : JSON.stringify({ query: query, model: selectedModel }),
+          : JSON.stringify({ query: query, collection: selectedCollection }),
       });
 
       const data = await res.json();
@@ -139,14 +140,17 @@ export default function Home() {
       </div>
 
       <div className="w-full mt-3">
-        <h3 className="font-bold mb-2">انتخاب مدل</h3>
+        <h3 className="font-bold mb-2">انتخاب کالکشن</h3>
         <select
           className="select select-bordered w-full md:max-w-xs px-2"
-          onChange={(e) => setSelectedModel(e.target.value)}
+          onChange={(e) => setSelectedCollection(e.target.value)}
         >
-          {models.map((model) => (
-            <option selected={selectedModel === model} key={model}>
-              {model}
+          {collections.map((collection) => (
+            <option
+              selected={selectedCollection === collection}
+              key={collection}
+            >
+              {collection}
             </option>
           ))}
         </select>
@@ -164,17 +168,19 @@ export default function Home() {
       )}
       {results && !isLoading && (
         <>
-          {results.metadatas.length === 0 ||
-            (results.metadatas[0].length === 0 && (
-              <div className="flex flex-col items-center justify-center w-full h-52">
-                <p>گشتم نبود نگرد نیست</p>
-              </div>
+          {selectedCollection === "products_openai" ||
+            (selectedCollection === "products" && (
+              <ProductResults products={results.metadatas[0]} />
             ))}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-4">
-            {results.metadatas[0].map((item: any, index: number) => (
-              <Product key={index} product={item} />
-            ))}
-          </div>
+          {selectedCollection === "comments_openai" && (
+            <CommentResults
+              comments={results.documents[0]}
+              ids={results.ids[0]}
+            />
+          )}
+          {selectedCollection === "hero" && (
+            <ProductResults products={results.metadatas[0]} />
+          )}
         </>
       )}
       {!isFirstTime && isError && (

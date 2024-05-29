@@ -1,3 +1,3 @@
-const models = ["setu4993/LaBSE", "text-embedding-3-small"];
+const collections = ["comments_openai", "products_openai", "products", "hero"];
 
-export { models };
+export { collections };

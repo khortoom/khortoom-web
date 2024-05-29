@@ -1,19 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { query as chromaQuery } from "@/lib/chroma";
 import { NextResponse } from "next/server";
-import axios from "axios";
-import { models } from "@/app/constants";
 
-const defaultModel = "text-embedding-3-small";
-
-import OpenAI from "openai";
-
-const baseUrl = process.env.OPENAI_BASE_URL;
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL: baseUrl,
-});
+import { laBSEProductSearch, openaiProductSearch } from "./product-search";
+import { openaiCommentSearch } from "./comment-search";
+import heroSearch from "./hero-search";
 
 export async function POST(request: Request) {
   const { method } = request;
@@ -24,20 +13,11 @@ export async function POST(request: Request) {
 
   const data = await request.json();
 
-  const { query, vectorQuery, model } = data;
+  const { query, vectorQuery, collection } = data;
 
-  if (model && typeof model !== "string") {
+  if (!collection) {
     return NextResponse.json(
-      { error: "Model must be a string" },
-      { status: 400 }
-    );
-  }
-
-  const queryModel = model || defaultModel;
-
-  if (models.includes(queryModel) === false) {
-    return NextResponse.json(
-      { error: "Invalid model provided" },
+      { error: "No collection provided" },
       { status: 400 }
     );
   }
@@ -46,26 +26,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No query provided" }, { status: 400 });
   }
 
-  if (vectorQuery) {
-    const res = await chromaQuery({
-      queryEmbedding: vectorQuery,
-      model: queryModel,
-    });
+  if (collection === "products" && vectorQuery) {
+    const res = await laBSEProductSearch(vectorQuery);
 
     return NextResponse.json({ res });
   }
 
-  if (query && model === "text-embedding-3-small") {
-    const embedding = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: query,
-      encoding_format: "float",
-    });
+  if (collection === "products_openai" && query) {
+    const res = await openaiProductSearch(query);
 
-    const res = await chromaQuery({
-      queryEmbedding: embedding.data[0].embedding,
-      model: "text-embedding-3-small",
-    });
+    return NextResponse.json({ res });
+  }
+
+  if (collection === "comments_openai" && query) {
+    const res = await openaiCommentSearch(query);
+
+    return NextResponse.json({ res });
+  }
+
+  if (collection === "hero" && query) {
+    const res = await heroSearch(query);
 
     return NextResponse.json({ res });
   }
