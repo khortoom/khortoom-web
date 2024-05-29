@@ -64,10 +64,23 @@ const getCollectionDetails = async ({ name }: { name: string }) => {
   return details;
 };
 
-const query = async ({ queryEmbedding }: { queryEmbedding: Embedding }) => {
+const query = async ({
+  queryEmbedding,
+  model,
+}: {
+  queryEmbedding: Embedding;
+  model: "text-embedding-3-small" | "setu4993/LaBSE";
+}) => {
   const c = await init();
 
-  const collection = await c?.getCollection({ name: "products" });
+  let collection;
+
+  if (model === "setu4993/LaBSE") {
+    collection = await c?.getCollection({ name: "products" });
+  } else if (model === "text-embedding-3-small") {
+    collection = await c?.getCollection({ name: "products_openai" });
+  }
+
   if (!collection) {
     throw new Error("Collection products not found");
   }

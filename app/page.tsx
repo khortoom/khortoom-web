@@ -3,10 +3,12 @@
 import Product from "./components/product";
 import Dialog from "./components/dialog";
 import { useEffect, useState } from "react";
+import { models } from "./constants";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [vectorQuery, setVectorQuery] = useState("");
+  const [selectedModel, setSelectedModel] = useState(models[0]);
 
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,13 +35,17 @@ export default function Home() {
     setIsLoading(true);
     setIsError(false);
     setIsFirstTime(false);
+    setResults(null);
 
     try {
       const res = await fetch("/api/query", {
         method: "POST",
         body: vectorQuery
-          ? JSON.stringify({ vectorQuery: JSON.parse(vectorQuery) })
-          : JSON.stringify({ query: query }),
+          ? JSON.stringify({
+              vectorQuery: JSON.parse(vectorQuery),
+              model: selectedModel,
+            })
+          : JSON.stringify({ query: query, model: selectedModel }),
       });
 
       const data = await res.json();
@@ -132,6 +138,20 @@ export default function Home() {
         </div>
       </div>
 
+      <div className="w-full mt-3">
+        <h3 className="font-bold mb-2">انتخاب مدل</h3>
+        <select
+          className="select select-bordered w-full md:max-w-xs px-2"
+          onChange={(e) => setSelectedModel(e.target.value)}
+        >
+          {models.map((model) => (
+            <option selected={selectedModel === model} key={model}>
+              {model}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* <Dialog
         loading={isLoading}
         text="سلام من بلیک هستم دستیار هوشمند خرید شما در پلتفرم خرطوم! با توجه به
@@ -159,7 +179,7 @@ export default function Home() {
       )}
       {!isFirstTime && isError && (
         <div className="flex flex-col items-center justify-center w-full h-52 gap-2">
-          <p>سلام سیستم قطعه فردا بیایید!</p>
+          <p>مشکلی در جستجوی شما به وجود اومده!</p>
           <svg
             className="w-12 h-12 text-gray-800"
             aria-hidden="true"
