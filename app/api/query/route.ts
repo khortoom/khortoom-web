@@ -37,8 +37,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No query provided" }, { status: 400 });
   }
 
-  console.log(vectorQuery.length, model);
-
   if (vectorQuery) {
     const res = await chromaQuery({
       queryEmbedding: vectorQuery,
