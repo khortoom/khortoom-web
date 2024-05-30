@@ -14,13 +14,6 @@ export default function Home() {
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isFirstTime, setIsFirstTime] = useState(true);
-
-  useEffect(() => {
-    if (!query) {
-      setIsFirstTime(true);
-    }
-  }, [query]);
 
   useEffect(() => {
     async function getLoader() {
@@ -30,12 +23,20 @@ export default function Home() {
     getLoader();
   });
 
+  useEffect(() => {
+    handleSearch();
+  }, [selectedCollection]);
+
+  const handleCollectionSelectChange = (e: any) => {
+    setResults(null);
+    setSelectedCollection(e.target.value);
+  };
+
   const handleSearch = async () => {
     if (!vectorQuery && !query) return;
 
     setIsLoading(true);
     setIsError(false);
-    setIsFirstTime(false);
     setResults(null);
 
     try {
@@ -63,6 +64,78 @@ export default function Home() {
       setIsLoading(false);
       setIsError(true);
     }
+  };
+
+  const renderResult = () => {
+    if (isLoading) {
+      return (
+        <div className="flex flex-col items-center justify-center w-full h-52">
+          <l-quantum size="45" speed="1.75" color="black"></l-quantum>
+        </div>
+      );
+    }
+
+    if (results) {
+      const { metadatas, documents } = results;
+      const hasProducts = metadatas && metadatas.length > 0;
+      const hasComments = documents && documents.length > 0;
+
+      const products = hasProducts ? metadatas[0] : [];
+      const comments = hasComments ? documents[0] : [];
+
+      if (selectedCollection === "comments_openai") {
+        return <CommentResults comments={comments} ids={results.ids[0]} />;
+      }
+
+      return <ProductResults products={products} />;
+    }
+
+    if (isError) {
+      return (
+        <div className="flex flex-col items-center justify-center w-full h-52 gap-2">
+          <p>مشکلی در جستجوی شما به وجود اومده!</p>
+          <svg
+            className="w-12 h-12 text-gray-800"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 5 9 4V3m5 2 1-1V3m-3 6v11m0-11a5 5 0 0 1 5 5m-5-5a5 5 0 0 0-5 5m5-5a4.959 4.959 0 0 1 2.973 1H15V8a3 3 0 0 0-6 0v2h.027A4.959 4.959 0 0 1 12 9Zm-5 5H5m2 0v2a5 5 0 0 0 10 0v-2m2.025 0H17m-9.975 4H6a1 1 0 0 0-1 1v2m12-3h1.025a1 1 0 0 1 1 1v2M16 11h1a1 1 0 0 0 1-1V8m-9.975 3H7a1 1 0 0 1-1-1V8"
+            />
+          </svg>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col items-center justify-center w-full gap-2 h-52">
+        <p>تو یکی نه‌ای هزاری تو جستجوی خود برافروز!</p>
+        <svg
+          className="w-12 h-12 text-gray-800"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeWidth="2"
+            d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+          />
+        </svg>
+      </div>
+    );
   };
 
   return (
@@ -143,7 +216,7 @@ export default function Home() {
         <h3 className="font-bold mb-2">انتخاب کالکشن</h3>
         <select
           className="select select-bordered w-full md:max-w-xs px-2"
-          onChange={(e) => setSelectedCollection(e.target.value)}
+          onChange={handleCollectionSelectChange}
         >
           {collections.map((collection) => (
             <option
@@ -161,71 +234,7 @@ export default function Home() {
         text="سلام من بلیک هستم دستیار هوشمند خرید شما در پلتفرم خرطوم! با توجه به
         جستجوی شما در مورد یک موبایل دخترانه پینشهاد من به شما..."
       /> */}
-      {isLoading && (
-        <div className="flex flex-col items-center justify-center w-full h-52">
-          <l-quantum size="45" speed="1.75" color="black"></l-quantum>
-        </div>
-      )}
-      {results && !isLoading && (
-        <>
-          {selectedCollection === "products_openai" ||
-            (selectedCollection === "products" && (
-              <ProductResults products={results.metadatas[0]} />
-            ))}
-          {selectedCollection === "comments_openai" && (
-            <CommentResults
-              comments={results.documents[0]}
-              ids={results.ids[0]}
-            />
-          )}
-          {selectedCollection === "hero" && (
-            <ProductResults products={results.metadatas[0]} />
-          )}
-        </>
-      )}
-      {!isFirstTime && isError && (
-        <div className="flex flex-col items-center justify-center w-full h-52 gap-2">
-          <p>مشکلی در جستجوی شما به وجود اومده!</p>
-          <svg
-            className="w-12 h-12 text-gray-800"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 5 9 4V3m5 2 1-1V3m-3 6v11m0-11a5 5 0 0 1 5 5m-5-5a5 5 0 0 0-5 5m5-5a4.959 4.959 0 0 1 2.973 1H15V8a3 3 0 0 0-6 0v2h.027A4.959 4.959 0 0 1 12 9Zm-5 5H5m2 0v2a5 5 0 0 0 10 0v-2m2.025 0H17m-9.975 4H6a1 1 0 0 0-1 1v2m12-3h1.025a1 1 0 0 1 1 1v2M16 11h1a1 1 0 0 0 1-1V8m-9.975 3H7a1 1 0 0 1-1-1V8"
-            />
-          </svg>
-        </div>
-      )}
-      {!results && !isLoading && !isError && isFirstTime && (
-        <div className="flex flex-col items-center justify-center w-full gap-2 h-52">
-          <p>تو یکی نه‌ای هزاری تو جستجوی خود برافروز!</p>
-          <svg
-            className="w-12 h-12 text-gray-800"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeWidth="2"
-              d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-            />
-          </svg>
-        </div>
-      )}
+      {renderResult()}
     </main>
   );
 }

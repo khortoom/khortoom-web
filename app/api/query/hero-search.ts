@@ -42,12 +42,17 @@ const heroSearch = async (query: string) => {
       const comment =
         commentIndex !== -1 ? commentResults.documents[0][commentIndex] : null;
 
+      const commentDistance =
+        (commentResults.distances![0][commentIndex] ?? 2) * 2;
+      const productDistance = productResults.distances![0][index];
+      const distance = productDistance + commentDistance;
+
       return {
         ...metadata,
         comment: comment,
-        distance:
-          productResults.distances![0][index] +
-          (commentResults.distances![0][commentIndex] ?? 2) * 2,
+        productDistance: productDistance,
+        commentDistance: commentDistance,
+        distance: distance,
       };
     }
   );

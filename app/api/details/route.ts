@@ -15,11 +15,13 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json({
+    const res = {
       heartbeat: heartbeatRes,
       collections: collections,
       collectionDetails: collectionDetails,
-    });
+    };
+
+    return NextResponse.json(res);
   } catch (error) {
     return NextResponse.json({ error });
   }

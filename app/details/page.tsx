@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 async function Details() {
   try {
@@ -15,7 +16,7 @@ async function Details() {
             در این صفحه میتوانید جزئیات لحظه‌ای خرطوم را مشاهده کنید.
           </p>
           <div className="flex flex-col gap-2 w-full">
-            <div className="border w-full p-5 flex flex-row justify-between items-center rounded-lg">
+            <div className="border w-full p-2 md:p-5 flex flex-row justify-between items-center rounded-lg">
               <p>وضعیت</p>
               {data.heartbeat ? (
                 <p className="text-green-700 flex flex-row justify-center items-center gap-2">
@@ -29,7 +30,7 @@ async function Details() {
                 <p className="text-red-700">مرده</p>
               )}
             </div>
-            <div className="border w-full p-5 flex flex-row justify-between items-center rounded-lg">
+            <div className="border w-full p-2 md:p-5 flex flex-row justify-between items-center rounded-lg">
               <p>تعداد کالکشن‌ها</p>
               <p>{data.collectionDetails.length}</p>
             </div>
@@ -37,31 +38,39 @@ async function Details() {
             {data.collectionDetails.map((collection: any, index: number) => (
               <div
                 key={index}
-                className="border w-full p-5 flex flex-col justify-between items-start rounded-lg"
+                className="border w-full p-2 md:p-5 flex flex-col justify-between items-start rounded-lg"
               >
                 <p className="font-bold pb-2">جزئیات کالکشن - {index}</p>
                 <div className="flex flex-col gap-2 w-full">
-                  <div className="border w-full p-5 flex flex-row justify-between items-center rounded-lg">
+                  <div className="border w-full p-2 md:p-5 flex flex-row justify-between items-center rounded-lg">
                     <p>نام</p>
                     <p>{collection.name}</p>
                   </div>
-                  <div className="border w-full p-5 flex flex-row justify-between items-center rounded-lg">
+                  <div className="border w-full p-2 md:p-5 flex flex-row justify-between items-center rounded-lg">
                     <p>تعداد آیتم‌ها</p>
                     <p>{collection.count}</p>
                   </div>
-                  <div className="border w-full p-5 flex flex-col justify-between items-start rounded-lg">
-                    <p className="font-medium pb-2">داکیومنت‌های نمونه</p>
-                    <div className="flex flex-col gap-1 w-full">
-                      {collection.peek.documents.map(
-                        (item: any, index: number) => (
-                          <div
-                            key={index}
-                            className="border w-full p-5 flex flex-row justify-between items-center rounded-lg"
-                          >
-                            <p>{item}</p>
-                          </div>
-                        )
-                      )}
+
+                  <div
+                    tabIndex={0}
+                    className="collapse collapse-plus border rounded-lg"
+                  >
+                    <div className="collapse-title font-medium">
+                      داکیومنت‌های نمونه
+                    </div>
+                    <div className="collapse-content">
+                      <div className="flex flex-col gap-1 w-full">
+                        {collection.peek.documents.map(
+                          (item: any, index: number) => (
+                            <div
+                              key={index}
+                              className="border w-full p-2 md:p-5 flex flex-row justify-between items-center rounded-lg"
+                            >
+                              <p>{item}</p>
+                            </div>
+                          )
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
