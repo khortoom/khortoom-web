@@ -3,6 +3,7 @@ import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
+import { Toaster } from "sonner";
 
 const vazir = Vazirmatn({ subsets: ["arabic", "latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="cupcake" dir="rtl">
       <body className={vazir.className}>
+        <Toaster className={vazir.className} />
         <Navbar />
         {children}
         <Footer />

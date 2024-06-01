@@ -19,5 +19,5 @@ export default async function middleware(request: NextRequest) {
 
   return success
     ? NextResponse.next()
-    : NextResponse.redirect(new URL("/blocked", request.url));
+    : NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
 }

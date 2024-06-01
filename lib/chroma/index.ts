@@ -1,12 +1,6 @@
 import "server-only";
 
-import {
-  ChromaClient,
-  Embedding,
-  Embeddings,
-  IncludeEnum,
-  Where,
-} from "chromadb";
+import { ChromaClient, Embedding, IncludeEnum, Where } from "chromadb";
 
 let client: ChromaClient | null = null;
 
@@ -25,11 +19,8 @@ const init = async () => {
       },
     });
 
-    console.log("Chroma client initialized");
-
     return client;
   } catch (error) {
-    console.error(error);
     return null;
   }
 };

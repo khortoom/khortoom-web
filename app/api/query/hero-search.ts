@@ -1,6 +1,5 @@
 import { IncludeEnum } from "chromadb";
 import openaiClient from "./openai-client";
-import { openaiProductSearch } from "./product-search";
 import { query as chromaQuery } from "@/lib/chroma";
 
 const heroSearch = async (query: string) => {
@@ -29,9 +28,6 @@ const heroSearch = async (query: string) => {
     include: [IncludeEnum.Documents, IncludeEnum.Distances],
     where: { product_id: { $in: productIds } },
   });
-
-  console.log("product distance", productResults.distances);
-  console.log("comments distance", commentResults.distances);
 
   const commentIds = commentResults.ids[0];
 
