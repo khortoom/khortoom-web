@@ -99,7 +99,7 @@ export default function Home() {
       const products = hasProducts ? metadatas[0] : [];
       const comments = hasComments ? documents[0] : [];
 
-      if (selectedCollection === "comments_openai") {
+      if (selectedCollection.value === "comments_openai") {
         return <CommentResults comments={comments} ids={results.ids[0]} />;
       }
 
@@ -202,15 +202,16 @@ export default function Home() {
       <div className="w-full mt-3">
         <h3 className="font-bold mb-2">انتخاب کالکشن</h3>
         <select
-          className="select select-bordered w-full md:max-w-xs px-2"
+          className="select select-bordered w-full md:max-w-md px-2"
           onChange={handleCollectionSelectChange}
         >
           {collections.map((collection) => (
             <option
               selected={selectedCollection === collection}
-              key={collection}
+              value={collection.value}
+              key={collection.value}
             >
-              {collection}
+              {collection.name}
             </option>
           ))}
         </select>
