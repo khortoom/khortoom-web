@@ -9,6 +9,8 @@ function Product(props: Props) {
   return (
     <a
       href={`https://www.digikala.com/product/dkp-${product.id}/`}
+      target="_blank"
+      rel="noreferrer"
       className="card bg-base-100 shadow-xl hover:scale-105 transition-all cursor-pointer"
     >
       <div className="card-body p-4">

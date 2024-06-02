@@ -9,7 +9,7 @@ async function Details() {
     const data = await response.json();
 
     return (
-      <main className="flex min-h-screen w-full flex-col items-center bg-base-100 px-5 pt-44 sm:pt-32">
+      <main className="flex min-h-screen w-full flex-col items-center bg-base-100 px-5 pt-44 sm:pt-32 pb-5">
         <div className="flex flex-col items-center w-full max-w-4xl">
           <h2 className="text-4xl font-bold">جزئیات خرطوم</h2>
           <p className="max-w-3xl py-3">

@@ -127,7 +127,13 @@ export default function Home() {
           />
           <div className="collapse-title text-xl font-medium">زیرو آیکیو </div>
           <div className="collapse-content">
-            <div className="w-full flex flex-row gap-2 prose">
+            <form
+              className="w-full flex flex-row gap-2 prose"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearch();
+              }}
+            >
               <label className="input input-bordered flex items-center gap-2 w-full">
                 <input
                   type="text"
@@ -149,10 +155,10 @@ export default function Home() {
                   />
                 </svg>
               </label>
-              <button className="btn btn-primary" onClick={handleSearch}>
+              <button className="btn btn-primary" type="submit">
                 جستجو
               </button>
-            </div>
+            </form>
           </div>
         </div>
         <div className="collapse collapse-arrow join-item border border-base-300">
@@ -164,7 +170,13 @@ export default function Home() {
             }}
           />
           <div className="collapse-title text-xl font-medium">آیکیو برداری</div>
-          <div className="collapse-content">
+          <form
+            className="collapse-content"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+          >
             <p>بردار شما باید توسط مدل کنونی دیتابیس خرطوم ساخته شود.</p>
 
             <div className="w-full flex flex-row gap-2 items-center">
@@ -178,12 +190,12 @@ export default function Home() {
 
               <button
                 className="btn btn-primary rotate-90 mx-[-12px]"
-                onClick={handleSearch}
+                type="submit"
               >
                 جستجو
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
 
