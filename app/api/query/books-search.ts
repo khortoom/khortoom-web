@@ -2,7 +2,7 @@ import { IncludeEnum } from "chromadb";
 import openaiClient from "./openai-client";
 import { query as chromaQuery } from "@/lib/chroma";
 
-const heroSearch = async (query: string) => {
+const booksSearch = async (query: string) => {
   const embedding = await openaiClient.embeddings.create({
     model: "text-embedding-3-small",
     input: query,
@@ -11,7 +11,7 @@ const heroSearch = async (query: string) => {
 
   const productResults = await chromaQuery({
     queryEmbedding: embedding.data[0].embedding,
-    collectionName: "products_openai",
+    collectionName: "products_books_openai",
     include: [
       IncludeEnum.Metadatas,
       IncludeEnum.Documents,
@@ -24,7 +24,7 @@ const heroSearch = async (query: string) => {
 
   const commentResults = await chromaQuery({
     queryEmbedding: embedding.data[0].embedding,
-    collectionName: "comments_openai",
+    collectionName: "comments_books_openai",
     include: [IncludeEnum.Documents, IncludeEnum.Distances],
     where: { product_id: { $in: productIds } },
   });
@@ -44,9 +44,7 @@ const heroSearch = async (query: string) => {
 
       const commentDistance =
         (commentResults.distances![0][commentIndex] ?? 2) * 2;
-
-      const productDistance = productResults.distances![0][index] * 10;
-
+      const productDistance = productResults.distances![0][index];
       const distance = productDistance + commentDistance;
 
       return {
@@ -71,4 +69,4 @@ const heroSearch = async (query: string) => {
   return res;
 };
 
-export default heroSearch;
+export default booksSearch;

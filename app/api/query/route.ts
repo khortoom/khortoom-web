@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { laBSEProductSearch, openaiProductSearch } from "./product-search";
 import { openaiCommentSearch } from "./comment-search";
 import heroSearch from "./hero-search";
+import booksSearch from "./books-search";
 
 export async function POST(request: Request) {
   const { method } = request;
@@ -46,6 +47,12 @@ export async function POST(request: Request) {
 
   if (collection === "hero" && query) {
     const res = await heroSearch(query);
+
+    return NextResponse.json({ res });
+  }
+
+  if (collection === "products_books_openai" && query) {
+    const res = await booksSearch(query);
 
     return NextResponse.json({ res });
   }
