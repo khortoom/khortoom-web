@@ -1,6 +1,7 @@
 import { IncludeEnum } from "chromadb";
 import openaiClient from "./openai-client";
 import { query as chromaQuery } from "@/lib/chroma";
+import reorder from "./reorder";
 
 const booksSearch = async (query: string) => {
   const embedding = await openaiClient.embeddings.create({
@@ -33,37 +34,10 @@ const booksSearch = async (query: string) => {
     return productResults;
   }
 
-  const commentIds = commentResults.ids[0];
-
-  const metadatas = productResults.metadatas[0].map(
-    (metadata: any, index: number) => {
-      const productId = metadata["id"];
-      const commentIndex = commentIds.indexOf(String(productId));
-      const comment =
-        commentIndex !== -1 ? commentResults.documents[0][commentIndex] : null;
-
-      const commentDistance =
-        (commentResults.distances![0][commentIndex] ?? 2) * 2;
-      const productDistance = productResults.distances![0][index];
-      const distance = productDistance + commentDistance;
-
-      return {
-        ...metadata,
-        comment: comment,
-        productDistance: productDistance,
-        commentDistance: commentDistance,
-        distance: distance,
-      };
-    }
-  );
-
-  // sort by distance lower is better
-  const sorted_metadata = metadatas.sort(
-    (a: any, b: any) => a.distance - b.distance
-  );
+  const reordered_metadata = await reorder(productResults, commentResults);
 
   const res = {
-    metadatas: [sorted_metadata],
+    metadatas: [reordered_metadata],
   };
 
   return res;
