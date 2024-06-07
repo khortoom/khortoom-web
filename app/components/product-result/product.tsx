@@ -15,7 +15,7 @@ function Product(props: Props) {
     >
       <div className="card-body p-4">
         <h2 className="card-title">{product.title_fa}</h2>
-        <p>{product.Brand}</p>
+        <p className="text-sm font-semibold">{product.Brand}</p>
         <p>{product.comment}</p>
         <div className="card-actions justify-end">
           {product.Category1 && (
