@@ -61,6 +61,29 @@ const getCollectionDetails = async ({ name }: { name: string }) => {
   return details;
 };
 
+const getProductsById = async ({
+  ids,
+  collectionName,
+}: {
+  ids: string[];
+  collectionName: string;
+}) => {
+  const c = await init();
+
+  const collection = await c?.getCollection({ name: collectionName });
+
+  if (!collection) {
+    throw new Error("Collection products not found");
+  }
+
+  const results = await collection.get({
+    ids: ids,
+    include: [IncludeEnum.Metadatas, IncludeEnum.Documents],
+  });
+
+  return results;
+};
+
 const query = async ({
   queryEmbedding,
   collectionName,
@@ -92,4 +115,10 @@ const query = async ({
   return results;
 };
 
-export { heartbeat, listCollections, getCollectionDetails, query };
+export {
+  heartbeat,
+  listCollections,
+  getCollectionDetails,
+  query,
+  getProductsById,
+};
