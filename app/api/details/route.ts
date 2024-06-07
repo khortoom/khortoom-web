@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
 import { getCollectionDetails, heartbeat, listCollections } from "@/lib/chroma";
+import { DetailsResponse } from "../types/details";
 
 export async function GET() {
   try {
@@ -15,10 +16,10 @@ export async function GET() {
       }
     }
 
-    const res = {
-      heartbeat: heartbeatRes,
-      collections: collections,
-      collectionDetails: collectionDetails,
+    const res: DetailsResponse = {
+      heartbeat: heartbeatRes ?? null,
+      collections: collections ?? null,
+      collectionDetails: collectionDetails ?? null,
     };
 
     return NextResponse.json(res);

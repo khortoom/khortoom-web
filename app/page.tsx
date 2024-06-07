@@ -7,6 +7,8 @@ import CommentResults from "./components/comments-result";
 import InitialState from "./components/initial-state";
 import ErrorState from "./components/error-state";
 import { toast } from "sonner";
+import Product, { isProduct } from "./types/product";
+import { QueryRequest, QueryResponse, QueryResult } from "./api/types/query";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -16,7 +18,7 @@ export default function Home() {
     collections[0].value
   );
 
-  const [results, setResults] = useState<any>(null);
+  const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -29,7 +31,7 @@ export default function Home() {
   }, []);
 
   const handleCollectionSelectChange = (e: any) => {
-    setResults(null);
+    setQueryResult(null);
     setSelectedCollection(e.target.value);
   };
 
@@ -38,21 +40,23 @@ export default function Home() {
 
     setIsLoading(true);
     setIsError(false);
-    setResults(null);
+    setQueryResult(null);
 
     try {
+      const requestBody: QueryRequest = vectorQuery
+        ? {
+            vectorQuery: JSON.parse(vectorQuery),
+            collection: selectedCollection,
+          }
+        : {
+            query: query,
+            collection: selectedCollection,
+            descriptiveQuery: descriptiveQuery,
+          };
+
       const res = await fetch("/api/query", {
         method: "POST",
-        body: vectorQuery
-          ? JSON.stringify({
-              vectorQuery: JSON.parse(vectorQuery),
-              collection: selectedCollection,
-            })
-          : JSON.stringify({
-              query: query,
-              collection: selectedCollection,
-              descriptiveQuery: descriptiveQuery,
-            }),
+        body: JSON.stringify(requestBody),
       });
 
       if (res.status !== 200) {
@@ -69,15 +73,15 @@ export default function Home() {
         return;
       }
 
-      const data = await res.json();
+      const data: QueryResponse = await res.json();
 
-      if (!data.res || data.res.error) {
+      if (!data.result) {
         setIsLoading(false);
         setIsError(true);
         return;
       }
 
-      setResults(data.res);
+      setQueryResult(data.result);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -94,19 +98,28 @@ export default function Home() {
       );
     }
 
-    if (results) {
-      const { metadatas, documents } = results;
+    if (queryResult) {
+      const { metadatas, documents, ids } = queryResult;
+
       const hasProducts = metadatas && metadatas.length > 0;
       const hasComments = documents && documents.length > 0;
 
       const products = hasProducts ? metadatas[0] : [];
       const comments = hasComments ? documents[0] : [];
 
-      if (selectedCollection === "comments_openai") {
-        return <CommentResults comments={comments} ids={results.ids[0]} />;
+      if (selectedCollection === "comments_openai" && ids) {
+        return <CommentResults comments={comments} ids={ids[0]} />;
       }
 
-      return <ProductResults products={products} />;
+      const filteredProducts = products.filter((item) =>
+        isProduct(item)
+      ) as Product[];
+
+      if (filteredProducts.length === 0) {
+        return <ErrorState />;
+      }
+
+      return <ProductResults products={filteredProducts} />;
     }
 
     if (isError) {
@@ -142,7 +155,7 @@ export default function Home() {
                 <input
                   type="text"
                   className="grow w-full"
-                  placeholder="موبایل دخترانه"
+                  placeholder="موبایل"
                   onChange={(e) => setQuery(e.target.value)}
                   value={query}
                 />

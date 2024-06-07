@@ -1,8 +1,9 @@
 import React from "react";
-import Product from "./product";
+import ProductComponent from "./product-component";
+import Product from "@/app/types/product";
 
 interface Props {
-  products: any[];
+  products: Product[];
 }
 
 function ProductResults(props: Props) {
@@ -16,7 +17,7 @@ function ProductResults(props: Props) {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-4">
         {products.map((item: any, index: number) => (
-          <Product key={index} product={item} />
+          <ProductComponent key={index} product={item} />
         ))}
       </div>
     </>

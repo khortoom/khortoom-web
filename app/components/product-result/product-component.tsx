@@ -1,10 +1,11 @@
+import Product from "@/app/types/product";
 import React from "react";
 
 interface Props {
-  product: any;
+  product: Product;
 }
 
-function Product(props: Props) {
+function ProductComponent(props: Props) {
   const { product } = props;
   return (
     <a
@@ -34,4 +35,4 @@ function Product(props: Props) {
   );
 }
 
-export default Product;
+export default ProductComponent;

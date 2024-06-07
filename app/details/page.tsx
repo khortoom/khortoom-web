@@ -1,3 +1,5 @@
+import { DetailsResponse } from "../api/types/details";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -6,7 +8,7 @@ async function Details() {
     const response = await fetch(`${process.env.SERVER_API_PATH}/api/details`, {
       cache: "no-store",
     });
-    const data = await response.json();
+    const data = (await response.json()) as DetailsResponse;
 
     return (
       <main className="flex min-h-screen w-full flex-col items-center bg-base-100 px-5 pt-44 sm:pt-32 pb-5">
@@ -32,10 +34,10 @@ async function Details() {
             </div>
             <div className="border w-full p-2 md:p-5 flex flex-row justify-between items-center rounded-lg">
               <p>تعداد کالکشن‌ها</p>
-              <p>{data.collectionDetails.length}</p>
+              <p>{data.collectionDetails?.length ?? "خالی"}</p>
             </div>
 
-            {data.collectionDetails.map((collection: any, index: number) => (
+            {data.collectionDetails?.map((collection: any, index: number) => (
               <div
                 key={index}
                 className="border w-full p-2 md:p-5 flex flex-col justify-between items-start rounded-lg"

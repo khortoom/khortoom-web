@@ -2,7 +2,7 @@ import React from "react";
 import Comment from "./comment";
 
 interface Props {
-  comments: string[];
+  comments: (string | null)[];
   ids: string[];
 }
 

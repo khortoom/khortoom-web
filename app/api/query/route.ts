@@ -1,68 +1,141 @@
 import { NextResponse } from "next/server";
-
 import { laBSEProductSearch, openaiProductSearch } from "./product-search";
 import { openaiCommentSearch } from "./comment-search";
 import heroSearch from "./hero-search";
 import booksSearch from "./books-search";
 import khortoomSearch from "./khortoom-search";
+import { QueryRequest, QueryResponse } from "../types/query";
 
 export async function POST(request: Request) {
   const { method } = request;
 
   if (method !== "POST") {
-    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+    return NextResponse.json(
+      { error: "Method not allowed. Please use POST." },
+      { status: 405 }
+    );
   }
 
-  const data = await request.json();
+  let data: QueryRequest;
+  try {
+    data = await request.json();
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Invalid JSON payload." },
+      { status: 400 }
+    );
+  }
 
   const { query, descriptiveQuery, vectorQuery, collection } = data;
 
   if (!collection) {
     return NextResponse.json(
-      { error: "No collection provided" },
+      { error: "Missing required field: 'collection'." },
       { status: 400 }
     );
   }
 
   if (!query && !vectorQuery) {
-    return NextResponse.json({ error: "No query provided" }, { status: 400 });
+    return NextResponse.json(
+      { error: "At least one of 'query' or 'vectorQuery' must be provided." },
+      { status: 400 }
+    );
   }
 
-  if (collection === "products" && vectorQuery) {
-    const res = await laBSEProductSearch(vectorQuery);
+  try {
+    let dbAnswer;
 
-    return NextResponse.json({ res });
+    switch (collection) {
+      case "products":
+        if (!vectorQuery) {
+          return NextResponse.json(
+            {
+              error: "'vectorQuery' is required for the 'products' collection.",
+            },
+            { status: 400 }
+          );
+        }
+        dbAnswer = await laBSEProductSearch(vectorQuery);
+        break;
+
+      case "products_openai":
+        if (!query) {
+          return NextResponse.json(
+            {
+              error:
+                "'query' is required for the 'products_openai' collection.",
+            },
+            { status: 400 }
+          );
+        }
+        dbAnswer = await openaiProductSearch(query);
+        break;
+
+      case "comments_openai":
+        if (!query) {
+          return NextResponse.json(
+            {
+              error:
+                "'query' is required for the 'comments_openai' collection.",
+            },
+            { status: 400 }
+          );
+        }
+        dbAnswer = await openaiCommentSearch(query);
+        break;
+
+      case "hero":
+        if (!query) {
+          return NextResponse.json(
+            { error: "'query' is required for the 'hero' collection." },
+            { status: 400 }
+          );
+        }
+        dbAnswer = await heroSearch(query);
+        break;
+
+      case "products_books_openai":
+        if (!query) {
+          return NextResponse.json(
+            {
+              error:
+                "'query' is required for the 'products_books_openai' collection.",
+            },
+            { status: 400 }
+          );
+        }
+        dbAnswer = await booksSearch(query);
+        break;
+
+      case "khortoom_search":
+        if (!query || !descriptiveQuery) {
+          return NextResponse.json(
+            {
+              error:
+                "'query' and 'descriptiveQuery' are required for the 'khortoom_search' collection.",
+            },
+            { status: 400 }
+          );
+        }
+        dbAnswer = await khortoomSearch(query, descriptiveQuery);
+        break;
+
+      default:
+        return NextResponse.json(
+          { error: "Invalid 'collection' provided." },
+          { status: 400 }
+        );
+    }
+
+    const apiResult: QueryResponse = {
+      result: { ...dbAnswer, ids: null, documents: null },
+    };
+
+    return NextResponse.json(apiResult);
+  } catch (error) {
+    return NextResponse.json(
+      { error: "An internal server error occurred.", details: String(error) },
+      { status: 500 }
+    );
   }
-
-  if (collection === "products_openai" && query) {
-    const res = await openaiProductSearch(query);
-
-    return NextResponse.json({ res });
-  }
-
-  if (collection === "comments_openai" && query) {
-    const res = await openaiCommentSearch(query);
-
-    return NextResponse.json({ res });
-  }
-
-  if (collection === "hero" && query) {
-    const res = await heroSearch(query);
-
-    return NextResponse.json({ res });
-  }
-
-  if (collection === "products_books_openai" && query) {
-    const res = await booksSearch(query);
-
-    return NextResponse.json({ res });
-  }
-
-  if (collection === "khortoom_search" && query && descriptiveQuery) {
-    const res = await khortoomSearch(query, descriptiveQuery);
-
-    return NextResponse.json({ res });
-  }
-
-  return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 }
