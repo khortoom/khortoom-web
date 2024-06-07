@@ -10,8 +10,11 @@ import { toast } from "sonner";
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const [descriptiveQuery, setDescriptiveQuery] = useState("");
   const [vectorQuery, setVectorQuery] = useState("");
-  const [selectedCollection, setSelectedCollection] = useState(collections[0]);
+  const [selectedCollection, setSelectedCollection] = useState(
+    collections[0].value
+  );
 
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,11 +26,7 @@ export default function Home() {
       quantum.register();
     }
     getLoader();
-  });
-
-  useEffect(() => {
-    handleSearch();
-  }, [selectedCollection]);
+  }, []);
 
   const handleCollectionSelectChange = (e: any) => {
     setResults(null);
@@ -49,7 +48,11 @@ export default function Home() {
               vectorQuery: JSON.parse(vectorQuery),
               collection: selectedCollection,
             })
-          : JSON.stringify({ query: query, collection: selectedCollection }),
+          : JSON.stringify({
+              query: query,
+              collection: selectedCollection,
+              descriptiveQuery: descriptiveQuery,
+            }),
       });
 
       if (res.status !== 200) {
@@ -99,7 +102,7 @@ export default function Home() {
       const products = hasProducts ? metadatas[0] : [];
       const comments = hasComments ? documents[0] : [];
 
-      if (selectedCollection.value === "comments_openai") {
+      if (selectedCollection === "comments_openai") {
         return <CommentResults comments={comments} ids={results.ids[0]} />;
       }
 
@@ -123,12 +126,13 @@ export default function Home() {
             defaultChecked
             onClick={() => {
               setQuery("");
+              setDescriptiveQuery("");
             }}
           />
           <div className="collapse-title text-xl font-medium">زیرو آیکیو </div>
           <div className="collapse-content">
             <form
-              className="w-full flex flex-row gap-2 prose"
+              className="w-full flex flex-row gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSearch();
@@ -155,6 +159,17 @@ export default function Home() {
                   />
                 </svg>
               </label>
+              {selectedCollection === "khortoom_search" && (
+                <label className="input input-bordered flex items-center gap-2 w-full">
+                  <input
+                    type="text"
+                    className="grow w-full"
+                    placeholder="خوشدست و سبک"
+                    onChange={(e) => setDescriptiveQuery(e.target.value)}
+                    value={descriptiveQuery}
+                  />
+                </label>
+              )}
               <button className="btn btn-primary" type="submit">
                 جستجو
               </button>
@@ -207,7 +222,7 @@ export default function Home() {
         >
           {collections.map((collection) => (
             <option
-              selected={selectedCollection === collection}
+              selected={selectedCollection === collection.value}
               value={collection.value}
               key={collection.value}
             >
