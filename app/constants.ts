@@ -16,6 +16,10 @@ const collections = [
     name: "جستجوی تلفیقی بر روی کتاب‌ها امبد شده توسط OpenAI",
     value: "products_books_openai",
   },
+  {
+    name: "جستجوی خرطومی بر روی ۱۰۰۰ پروداکت همراه کامنت",
+    value: "khortoom_search",
+  },
 ];
 
 export { collections };
