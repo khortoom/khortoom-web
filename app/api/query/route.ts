@@ -4,6 +4,7 @@ import { laBSEProductSearch, openaiProductSearch } from "./product-search";
 import { openaiCommentSearch } from "./comment-search";
 import heroSearch from "./hero-search";
 import booksSearch from "./books-search";
+import khortoomSearch from "./khortoom-search";
 
 export async function POST(request: Request) {
   const { method } = request;
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
 
   const data = await request.json();
 
-  const { query, vectorQuery, collection } = data;
+  const { query, descriptiveQuery, vectorQuery, collection } = data;
 
   if (!collection) {
     return NextResponse.json(
@@ -53,6 +54,12 @@ export async function POST(request: Request) {
 
   if (collection === "products_books_openai" && query) {
     const res = await booksSearch(query);
+
+    return NextResponse.json({ res });
+  }
+
+  if (collection === "khortoom_search" && query && descriptiveQuery) {
+    const res = await khortoomSearch(query, descriptiveQuery);
 
     return NextResponse.json({ res });
   }
